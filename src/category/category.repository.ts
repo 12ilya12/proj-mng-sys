@@ -3,8 +3,8 @@ import { CategoryPersistType } from "./category.persistType";
 import { categoryTable } from "../db/schema";
 import { DrizzleService } from "../db/drizzle.service";
 import { Injectable } from "@nestjs/common";
-import { IPaging, IPagingOptions } from "src/pagination/pagination";
-import { AnyColumn, asc, desc } from "drizzle-orm";
+import { IPaging, IPagingOptions } from "../pagination/pagination";
+import { AnyColumn, asc, desc, eq } from "drizzle-orm";
 
 
 @Injectable()
@@ -42,4 +42,9 @@ export class CategoryRepository {
 
         return {items: await items, pagination: {totalItems: 1, totalPages: 1, options: pagingOptions}};
     }
+
+    async getCategoryById(id: number) : Promise<CategoryPersistType> {
+        let category = (await this.drizzle.db.select().from(categoryTable).where(eq(categoryTable.id, id)))[0];
+        return category;
+    } 
 }

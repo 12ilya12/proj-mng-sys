@@ -13,4 +13,9 @@ export class CategoryService {
         //TODO: Нужно ли возвращать result.pagination?
         return toCategoryDtoArray(result.items);
     }
+
+    async getCategoryById(id: string) : Promise<CategoryDto> {
+        let category = await this.categoryRepository.getCategoryById(Number(id));
+        return toCategoryDto(category);
+    }
 }
