@@ -2,7 +2,7 @@
 import { CategoryPersistType } from "./category.persistType";
 import { categoryTable, taskTable } from "../db/schema";
 import { DrizzleService } from "../db/drizzle.service";
-import { Injectable } from "@nestjs/common";
+import { ConflictException, Injectable } from "@nestjs/common";
 import { IPaging, IPagingOptions } from "../pagination/pagination";
 import { AnyColumn, asc, count, desc, eq } from "drizzle-orm";
 import { CreateCategoryDto } from "./dto/category.create.dto";
@@ -51,10 +51,12 @@ export class CategoryRepository {
     } 
 
     async create(categoryInfo: CreateCategoryDto) : Promise<CategoryPersistType> {
-        let newCategory = (await this.drizzle.db.insert(categoryTable).values({
-            name: categoryInfo.name
-        }).returning())[0];
-        return newCategory;
+        return await this.drizzle.db.transaction(async (tx) => {
+            let newCategory = (await this.drizzle.db.insert(categoryTable).values({
+                name: categoryInfo.name
+            }).returning())[0];
+            return newCategory;
+        });
     }
 
     async update(id: number, categoryInfo: UpdateCategoryDto) : Promise<CategoryPersistType> {
@@ -69,4 +71,19 @@ export class CategoryRepository {
         taskCount = (await this.drizzle.db.select({ value: count() }).from(taskTable).where(eq(taskTable.categoryId, id)))[0].value;
         return taskCount > 0;
     } 
+
+    async delete(id: number) {
+        await this.drizzle.db.transaction(async (tx) => {
+            if (this.hasTasks(id)) {
+                throw new ConflictException(); //tx.rollback(); ?
+            }
+            await this.drizzle.db.delete(categoryTable).where(eq(categoryTable.id, id));
+        });
+    }
+
+    async deleteForce(id: number) {
+        await this.drizzle.db.transaction(async (tx) => {
+            await this.drizzle.db.delete(categoryTable).where(eq(categoryTable.id, id));
+        });
+    }
 }

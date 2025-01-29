@@ -35,4 +35,12 @@ export class CategoryService {
     async hasTasks(id: number) : Promise<CategoryHasTasksDto> {
         return { hasTasks: await this.categoryRepository.hasTasks(id) };
     }
+
+    async delete(id: number) {
+        this.categoryRepository.delete(id);
+    }
+
+    async deleteForce(id: number) {
+        this.categoryRepository.deleteForce(id);
+    }
 }

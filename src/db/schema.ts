@@ -23,7 +23,7 @@ export const taskTable = pgTable("task", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   name: varchar({ length: 255 }).notNull(),
   description: text().notNull(),
-  categoryId: integer().references(() => categoryTable.id),
+  categoryId: integer().references(() => categoryTable.id, { onDelete: 'cascade' }),
   statusId: integer().references(() => statusTable.id),
   userId: integer().references(() => userTable.id),
 });

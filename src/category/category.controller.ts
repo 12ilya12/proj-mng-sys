@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Query, SetMetadata, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, SetMetadata, UseGuards } from "@nestjs/common";
 import { CategoryService } from "./category.service";
 import { CategoryDto } from "./dto/category.dto";
 import { IPagingOptions } from "../pagination/pagination";
@@ -42,6 +42,16 @@ export class CategoryController {
         return this.categoryService.hasTasks(id);
     }
 
+    @Delete(':id')
+    @SetMetadata('roles', ['ADMIN'])
+    delete(@Param('id') id: number) {
+        this.categoryService.delete(id);
+    }
 
+    @Delete(':id/force')
+    @SetMetadata('roles', ['ADMIN'])
+    deleteForce(@Param('id') id: number) {
+        this.categoryService.deleteForce(id);
+    }
 
 }
