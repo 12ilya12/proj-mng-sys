@@ -1,8 +1,11 @@
-import { Body, Controller, Get, Param, Post, Query, SetMetadata, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post, Query, SetMetadata, UseGuards } from "@nestjs/common";
 import { CategoryService } from "./category.service";
 import { CategoryDto } from "./dto/category.dto";
 import { IPagingOptions } from "../pagination/pagination";
 import { RolesGuard } from "../auth/auth.roleGuard";
+import { CreateCategoryDto } from "./dto/category.create.dto";
+import { UpdateCategoryDto } from "./dto/category.update.dto";
+import { CategoryHasTasksDto } from "./dto/category.hasTasks.dto";
 
 @Controller('category')
 @UseGuards(RolesGuard)
@@ -10,21 +13,34 @@ export class CategoryController {
     constructor(private categoryService: CategoryService) {}
 
     @Get()
-    getAllCategories(@Query() pagingOptions: Partial<IPagingOptions>): Promise<CategoryDto[]> {
+    getAll(@Query() pagingOptions: Partial<IPagingOptions>): Promise<CategoryDto[]> {
         //TODO: Валидация pagingOption
-        return this.categoryService.getAllCategories(pagingOptions);
+        return this.categoryService.getAll(pagingOptions);
     }
 
     @Get(':id')
-    getCategoryById(@Param('id') id: string) : Promise<CategoryDto> {
-        return this.categoryService.getCategoryById(id);
+    getById(@Param('id') id: number) : Promise<CategoryDto> {
+        return this.categoryService.getById(id);
     }
 
-/*     @Post()
+    @Post()
     @SetMetadata('roles', ['ADMIN'])
-    createCategory(@Body() createCategoryDto: CreateCategoryDto) {
-        
-    } */
+    create(@Body() createCategoryDto: CreateCategoryDto) : Promise<CategoryDto> {
+        let newCategory = this.categoryService.create(createCategoryDto);
+        return newCategory;
+    }
+
+    @Patch(':id')
+    @SetMetadata('roles', ['ADMIN'])
+    update(@Param('id') id: number, @Body() updateCategoryDto: UpdateCategoryDto) : Promise<CategoryDto> {
+        let updatedCategory = this.categoryService.update(id, updateCategoryDto);
+        return updatedCategory;
+    }
+
+    @Get(':id/has-tasks')
+    hasTasks(@Param('id') id: number) : Promise<CategoryHasTasksDto> {
+        return this.categoryService.hasTasks(id);
+    }
 
 
 
