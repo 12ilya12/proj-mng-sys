@@ -25,16 +25,16 @@ export class RolesGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET,
       });
+      
+      //Сохраняем информацию о текущем пользователе. Пригодится в контроллерах.
+      request['user'] = payload;
+
       const currentUserRole = payload.role;
       const shouldBeRole = this.reflector.get<string[]>('roles', context.getHandler());  // список ролей переданный с помощью аннотации SetMetadata
       if (shouldBeRole == null || shouldBeRole.length === 0 || shouldBeRole.includes(currentUserRole))
         return true;
         else
         return false;
-
-      /* // 💡 We're assigning the payload to the request object here
-      // so that we can access it in our route handlers
-      request['user'] = payload; */
     } catch {
       throw new UnauthorizedException();
     }

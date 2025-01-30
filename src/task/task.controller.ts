@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, SetMetadata, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, SetMetadata, UseGuards, Request } from "@nestjs/common";
 import { TaskService } from "./task.service";
 import { TaskDto } from "./dto/task.dto";
 import { IPagingOptions } from "../pagination/pagination";
@@ -13,9 +13,9 @@ export class TaskController {
     constructor(private taskService: TaskService) {}
 
     @Get()
-    getAll(@Query() pagingOptions: Partial<IPagingOptions>, @Body() filter : TaskFilterDto): Promise<TaskDto[]> {
+    getAll(@Query() pagingOptions: Partial<IPagingOptions>, @Body() filter : TaskFilterDto, @Request() req): Promise<TaskDto[]> {
         //TODO: Валидация pagingOption
-        return this.taskService.getAll(pagingOptions);
+        return this.taskService.getAll(pagingOptions, filter, req.user);
     }
 
     @Get(':id')
@@ -32,8 +32,8 @@ export class TaskController {
 
     @Patch(':id')
     @SetMetadata('roles', ['ADMIN'])
-    update(@Param('id') id: number, @Body() updateTaskDto: UpdateTaskDto) : Promise<TaskDto> {
-        let updatedTask = this.taskService.update(id, updateTaskDto);
+    update(@Param('id') id: number, @Body() updateTaskDto: UpdateTaskDto, @Request() req) : Promise<TaskDto> {
+        let updatedTask = this.taskService.update(id, updateTaskDto, req.user);
         return updatedTask;
     }
 
