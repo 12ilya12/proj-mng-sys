@@ -4,7 +4,7 @@ import { taskTable } from "../db/schema";
 import { DrizzleService } from "../db/drizzle.service";
 import { ConflictException, Injectable } from "@nestjs/common";
 import { IPaging, IPagingOptions } from "../pagination/pagination";
-import { AnyColumn, asc, count, desc, eq } from "drizzle-orm";
+import { AnyColumn, asc, count, desc, eq, and } from "drizzle-orm";
 import { CreateTaskDto } from "./dto/task.create.dto";
 import { UpdateTaskDto } from "./dto/task.update.dto";
 import { TaskFilterDto } from "./dto/task.filter.dto";
@@ -75,12 +75,17 @@ export class TaskRepository {
     }
 
     async updateStatus(id: number, statusId: number, userId: number) : Promise<TaskPersistType> {
-        //Проверить, что это задача текущего пользователя.
-        /* let updatedTask = (await this.drizzle.db.update(taskTable).set({
-            statusId: statusId
-        }).where(eq(taskTable.id, id)).returning())[0];
-        return updatedTask; */
-        return null;
+        //Насколько я понял, начиная с 0.32 версии Drizzle есть ошибка, не позволяющая 
+        //передавать в update().set() некоторые отдельные поля (в данном случае statusId).
+        //Пока нашёл такой выход из ситуации
+        const statusIdData: Partial<typeof taskTable.$inferSelect> = {
+            statusId: statusId,
+        }   
+         let updatedTask = (await this.drizzle.db.update(taskTable).set(
+            statusIdData
+            //{ statusId: statusId }
+        ).where(and(eq(taskTable.id, id),eq(taskTable.userId, userId))).returning())[0];
+        return updatedTask; 
     }
 
 

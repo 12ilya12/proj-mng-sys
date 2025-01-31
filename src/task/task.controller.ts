@@ -31,7 +31,7 @@ export class TaskController {
     }
 
     @Patch(':id')
-    @SetMetadata('roles', ['ADMIN'])
+    @SetMetadata('roles', ['ADMIN', 'USER'])
     update(@Param('id') id: number, @Body() updateTaskDto: UpdateTaskDto, @Request() req) : Promise<TaskDto> {
         let updatedTask = this.taskService.update(id, updateTaskDto, req.user);
         return updatedTask;
