@@ -13,12 +13,12 @@ export const toCategoryDto = (data: CategoryPersistType): CategoryDto => {
 };
 
 export const toCategoryDtoArray = (data: CategoryPersistType[]): CategoryDto[] => {
-    let userDtos = [];
+    let categoryDtos = [];
     
     data.forEach(function(categoryPersist) {
         const { id, name } = categoryPersist;
-        userDtos.push({id, name});
+        categoryDtos.push({id, name});
     });
 
-    return userDtos;
+    return categoryDtos;
   };

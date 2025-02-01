@@ -7,7 +7,7 @@ import { CreateCategoryDto } from "./dto/category.create.dto";
 import { UpdateCategoryDto } from "./dto/category.update.dto";
 import { CategoryHasTasksDto } from "./dto/category.hasTasks.dto";
 
-@Controller('category')
+@Controller('categories')
 @UseGuards(RolesGuard)
 export class CategoryController {
     constructor(private categoryService: CategoryService) {}

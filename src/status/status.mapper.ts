@@ -13,12 +13,12 @@ export const toStatusDto = (data: StatusPersistType): StatusDto => {
 };
 
 export const toStatusDtoArray = (data: StatusPersistType[]): StatusDto[] => {
-    let userDtos = [];
+    let statusDtos = [];
     
     data.forEach(function(statusPersist) {
         const { id, name } = statusPersist;
-        userDtos.push({id, name});
+        statusDtos.push({id, name});
     });
 
-    return userDtos;
+    return statusDtos;
   };

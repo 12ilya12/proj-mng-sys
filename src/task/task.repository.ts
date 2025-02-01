@@ -75,16 +75,13 @@ export class TaskRepository {
     }
 
     async updateStatus(id: number, statusId: number, userId: number) : Promise<TaskPersistType> {
-        /* //Насколько я понял, начиная с 0.32 версии Drizzle есть ошибка, не позволяющая 
-        //передавать в update().set() некоторые отдельные поля (в данном случае statusId).
-        //Пока нашёл такой выход из ситуации
-        const statusIdData: Partial<typeof taskTable.$inferSelect> = {
-            statusId: statusId,
-        }    */
-        //Другое решение, в схеме statusId нужно было сделать notNull().
-        
-         let updatedTask = (await this.drizzle.db.update(taskTable).set(
-            //statusIdData
+        /* //Начиная с 0.32 версии Drizzle есть особенность, не позволяющая 
+        //передавать в update().set() некоторые отдельные поля (по крайней мере те, что не отмечены как notNull).
+        //Если бы statusId не был отмечен как notNull, его можно было бы передать следующим образом.
+        const statusIdData: Partial<typeof taskTable.$inferSelect> = { statusId: statusId }    
+        this.drizzle.db.update(taskTable).set(statusIdData)...
+        */
+        let updatedTask = (await this.drizzle.db.update(taskTable).set(
             { statusId: statusId }
         ).where(and(eq(taskTable.id, id),eq(taskTable.userId, userId))).returning())[0];
         return updatedTask; 

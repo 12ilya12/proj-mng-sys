@@ -17,12 +17,12 @@ export const toTaskDto = (data: TaskPersistType): TaskDto => {
 };
 
 export const toTaskDtoArray = (data: TaskPersistType[]): TaskDto[] => {
-    let userDtos = [];
+    let taskDtos = [];
     
     data.forEach(function(taskPersist) {
         const { id, name, description, categoryId, statusId, userId } = taskPersist;
-        userDtos.push({ id, name, description, categoryId, statusId, userId });
+        taskDtos.push({ id, name, description, categoryId, statusId, userId });
     });
 
-    return userDtos;
+    return taskDtos;
   };

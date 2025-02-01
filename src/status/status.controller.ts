@@ -6,7 +6,7 @@ import { RolesGuard } from "../auth/auth.roleGuard";
 import { CreateStatusDto } from "./dto/status.create.dto";
 import { UpdateStatusDto } from "./dto/status.update.dto";
 
-@Controller('status')
+@Controller('statuses')
 @UseGuards(RolesGuard)
 export class StatusController {
     constructor(private statusService: StatusService) {}

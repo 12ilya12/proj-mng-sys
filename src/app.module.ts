@@ -19,10 +19,13 @@ import { StatusService } from './status/status.service';
 import { StatusRepository } from './status/status.repository';
 import { TaskService } from './task/task.service';
 import { TaskRepository } from './task/task.repository';
+import { DependencyController } from './dependency/dependency.controller';
+import { DependencyService } from './dependency/dependency.service';
+import { DependencyRepository } from './dependency/dependency.repository';
 
 @Module({
   imports: [DrizzleModule, ConfigModule.forRoot( { isGlobal:true } )],
-  controllers: [AppController, AuthController, CategoryController, StatusController, TaskController],
+  controllers: [AppController, AuthController, CategoryController, StatusController, TaskController, DependencyController],
   providers: [
     AppService, 
     DrizzleService, 
@@ -36,7 +39,9 @@ import { TaskRepository } from './task/task.repository';
     StatusService,
     StatusRepository,
     TaskService,
-    TaskRepository
+    TaskRepository,
+    DependencyService,
+    DependencyRepository
   ],
 })
 export class AppModule {}
