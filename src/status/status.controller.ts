@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, SetMetadata, UseGuards } from "@nestjs/common";
 import { StatusService } from "./status.service";
 import { StatusDto } from "./dto/status.dto";
-import { IPagingOptions } from "../pagination/pagination";
+import { IPaging, IPagingOptions } from "../pagination/pagination";
 import { RolesGuard } from "../auth/auth.roleGuard";
 import { CreateStatusDto } from "./dto/status.create.dto";
 import { UpdateStatusDto } from "./dto/status.update.dto";
@@ -12,7 +12,7 @@ export class StatusController {
     constructor(private statusService: StatusService) {}
 
     @Get()
-    getAll(@Query() pagingOptions: Partial<IPagingOptions>): Promise<StatusDto[]> {
+    getAll(@Query() pagingOptions: Partial<IPagingOptions>): Promise<IPaging<StatusDto>> {
         //TODO: Валидация pagingOption
         return this.statusService.getAll(pagingOptions);
     }

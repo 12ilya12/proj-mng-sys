@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { TaskDto } from "./dto/task.dto";
 import { TaskRepository } from "./task.repository";
-import { IPagingOptions } from "src/pagination/pagination";
+import { IPaging, IPagingOptions } from "../pagination/pagination";
 import { toTaskDto, toTaskDtoArray } from "./task.mapper";
 import { CreateTaskDto } from "./dto/task.create.dto";
 import { UpdateTaskDto } from "./dto/task.update.dto";
@@ -12,10 +12,10 @@ import { TaskPersistType } from "./task.persistType";
 export class TaskService {
     constructor(private taskRepository: TaskRepository) {}
 
-    async getAll(pagingOptions: Partial<IPagingOptions>, filter: TaskFilterDto, userInfo): Promise<TaskDto[]> {
+    async getAll(pagingOptions: Partial<IPagingOptions>, filter: TaskFilterDto, userInfo): Promise<IPaging<TaskDto>> {
         let result = await this.taskRepository.getAll(pagingOptions, filter, userInfo);
-        //TODO: Нужно ли возвращать result.pagination?
-        return toTaskDtoArray(result.items);
+        let tasks = toTaskDtoArray(result.items);
+        return { items: tasks, pagination: result.pagination };
     }
 
     async getById(id: number) : Promise<TaskDto> {

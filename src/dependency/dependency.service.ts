@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { DependencyDto } from "./dto/dependency.dto";
-import { IPagingOptions } from "../pagination/pagination";
+import { IPaging, IPagingOptions } from "../pagination/pagination";
 import { DependencyRepository } from "./dependency.repository";
 import { toDependencyDto, toDependencyDtoArray } from "./dependency.mapper";
 import { CreateDependencyDto } from "./dto/dependency.create.dto";
@@ -9,10 +9,10 @@ import { CreateDependencyDto } from "./dto/dependency.create.dto";
 export class DependencyService {
     constructor(private dependencyRepository: DependencyRepository) {}
 
-    async getAll(parentTaskId: number, pagingOptions: Partial<IPagingOptions>): Promise<DependencyDto[]> {
+    async getAll(parentTaskId: number, pagingOptions: Partial<IPagingOptions>): Promise<IPaging<DependencyDto>> {
         let result = await this.dependencyRepository.getAll(parentTaskId, pagingOptions);
-        //TODO: Нужно ли возвращать result.pagination?
-        return toDependencyDtoArray(result.items);
+        let dependencies = toDependencyDtoArray(result.items)
+        return { items: dependencies, pagination: result.pagination };
     }
 
     async create(parentTaskId: number, createDependencyDto : CreateDependencyDto, userInfo) : Promise<DependencyDto> {

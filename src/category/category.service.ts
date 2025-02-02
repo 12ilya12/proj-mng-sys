@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { CategoryDto } from "./dto/category.dto";
 import { CategoryRepository } from "./category.repository";
-import { IPagingOptions } from "src/pagination/pagination";
+import { IPaging, IPagingOptions } from "../pagination/pagination";
 import { toCategoryDto, toCategoryDtoArray } from "./category.mapper";
 import { CreateCategoryDto } from "./dto/category.create.dto";
 import { UpdateCategoryDto } from "./dto/category.update.dto";
@@ -11,10 +11,12 @@ import { CategoryHasTasksDto } from "./dto/category.hasTasks.dto";
 export class CategoryService {
     constructor(private categoryRepository: CategoryRepository) {}
 
-    async getAll(pagingOptions: Partial<IPagingOptions>): Promise<CategoryDto[]> {
+    async getAll(pagingOptions: Partial<IPagingOptions>): Promise<IPaging<CategoryDto>> {
         let result = await this.categoryRepository.getAll(pagingOptions);
-        //TODO: Нужно ли возвращать result.pagination?
-        return toCategoryDtoArray(result.items);
+        let categories = toCategoryDtoArray(result.items);
+        return { items: categories, 
+            pagination: result.pagination
+        }
     }
 
     async getById(id: number) : Promise<CategoryDto> {

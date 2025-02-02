@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { StatusDto } from "./dto/status.dto";
 import { StatusRepository } from "./status.repository";
-import { IPagingOptions } from "src/pagination/pagination";
+import { IPaging, IPagingOptions } from "../pagination/pagination";
 import { toStatusDto, toStatusDtoArray } from "./status.mapper";
 import { CreateStatusDto } from "./dto/status.create.dto";
 import { UpdateStatusDto } from "./dto/status.update.dto";
@@ -10,10 +10,10 @@ import { UpdateStatusDto } from "./dto/status.update.dto";
 export class StatusService {
     constructor(private statusRepository: StatusRepository) {}
 
-    async getAll(pagingOptions: Partial<IPagingOptions>): Promise<StatusDto[]> {
+    async getAll(pagingOptions: Partial<IPagingOptions>): Promise<IPaging<StatusDto>> {
         let result = await this.statusRepository.getAll(pagingOptions);
-        //TODO: Нужно ли возвращать result.pagination?
-        return toStatusDtoArray(result.items);
+        let statuses = toStatusDtoArray(result.items);
+        return { items: statuses, pagination: result.pagination };
     }
 
     async getById(id: number) : Promise<StatusDto> {

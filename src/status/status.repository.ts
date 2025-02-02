@@ -15,6 +15,8 @@ export class StatusRepository {
 
     async getAll(pagingOptions: Partial<IPagingOptions>): Promise<IPaging<StatusPersistType>> {
         let items = this.drizzle.db.select().from(statusTable);
+        const totalItems: number = (await items).length;
+        const totalPages: number = pagingOptions.pageSize ? Math.ceil(totalItems / pagingOptions.pageSize) : 1;
 
         //Определяем по какой колонке сортируем, если это потребуется. По умолчанию, будем сортировать по id.
         let columnOrderBy: AnyColumn = statusTable.id;
@@ -42,7 +44,7 @@ export class StatusRepository {
         if (pagingOptions.page)
            items.offset((Number(pagingOptions.page) - 1) * Number(pagingOptions.pageSize));
 
-        return {items: await items, pagination: {totalItems: 1, totalPages: 1, options: pagingOptions}};
+        return {items: await items, pagination: {totalItems: totalItems, totalPages: totalPages, options: pagingOptions}};
     }
 
     async getById(id: number) : Promise<StatusPersistType> {
@@ -74,7 +76,7 @@ export class StatusRepository {
 
     async delete(id: number) {
         await this.drizzle.db.transaction(async (tx) => {
-            if (this.hasTasks(id)) {
+            if (await this.hasTasks(id)) {
                 throw new ConflictException(); //tx.rollback(); ?
             }
             await this.drizzle.db.delete(statusTable).where(eq(statusTable.id, id));

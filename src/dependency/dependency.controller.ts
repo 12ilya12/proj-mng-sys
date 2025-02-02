@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post, Query, UseGuards, Request, Delete } from "@nestjs/common";
 import { RolesGuard } from "../auth/auth.roleGuard";
-import { IPagingOptions } from "../pagination/pagination";
+import { IPaging, IPagingOptions } from "../pagination/pagination";
 import { DependencyDto } from "./dto/dependency.dto";
 import { DependencyService } from "./dependency.service";
 import { CreateDependencyDto } from "./dto/dependency.create.dto";
@@ -11,7 +11,7 @@ export class DependencyController {
     constructor(private dependencyService: DependencyService) {}
 
     @Get()
-    getAll(@Param('taskId') taskId: number, @Query() pagingOptions: Partial<IPagingOptions>) : Promise<DependencyDto[]> {
+    getAll(@Param('taskId') taskId: number, @Query() pagingOptions: Partial<IPagingOptions>) : Promise<IPaging<DependencyDto>> {
         return this.dependencyService.getAll(taskId, pagingOptions);
     }
 

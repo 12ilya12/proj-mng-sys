@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, SetMetadata, UseGuards } from "@nestjs/common";
 import { CategoryService } from "./category.service";
 import { CategoryDto } from "./dto/category.dto";
-import { IPagingOptions } from "../pagination/pagination";
+import { IPaging, IPagingOptions } from "../pagination/pagination";
 import { RolesGuard } from "../auth/auth.roleGuard";
 import { CreateCategoryDto } from "./dto/category.create.dto";
 import { UpdateCategoryDto } from "./dto/category.update.dto";
@@ -13,7 +13,7 @@ export class CategoryController {
     constructor(private categoryService: CategoryService) {}
 
     @Get()
-    getAll(@Query() pagingOptions: Partial<IPagingOptions>): Promise<CategoryDto[]> {
+    getAll(@Query() pagingOptions: Partial<IPagingOptions>): Promise<IPaging<CategoryDto>> {
         //TODO: Валидация pagingOption
         return this.categoryService.getAll(pagingOptions);
     }

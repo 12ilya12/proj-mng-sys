@@ -2,9 +2,9 @@ import { BadRequestException, ForbiddenException, Injectable } from "@nestjs/com
 import { DrizzleService } from "../db/drizzle.service";
 import { IPaging, IPagingOptions } from "../pagination/pagination";
 import { DependencyPersistType } from "./dependency.persistType";
-import { dependencyTable } from "src/db/schema";
+import { dependencyTable } from "../db/schema";
 import { AnyColumn, asc, count, desc, eq, and } from "drizzle-orm";
-import { TaskRepository } from "src/task/task.repository";
+import { TaskRepository } from "../task/task.repository";
 
 @Injectable()
 export class DependencyRepository {
@@ -12,6 +12,8 @@ export class DependencyRepository {
 
     async getAll(parentTaskId: number, pagingOptions: Partial<IPagingOptions>): Promise<IPaging<DependencyPersistType>> {
         let items = this.drizzle.db.select().from(dependencyTable).where(eq(dependencyTable.parentTaskId, parentTaskId));
+        const totalItems: number = (await items).length;
+        const totalPages: number = pagingOptions.pageSize ? Math.ceil(totalItems / pagingOptions.pageSize) : 1;
 
         //Определяем по какой колонке сортируем, если это потребуется. По умолчанию, будем сортировать по id.
         let columnOrderBy: AnyColumn = dependencyTable.id;
@@ -39,7 +41,7 @@ export class DependencyRepository {
         if (pagingOptions.page)
            items.offset((Number(pagingOptions.page) - 1) * Number(pagingOptions.pageSize));
 
-        return {items: await items, pagination: {totalItems: 1, totalPages: 1, options: pagingOptions}};
+        return {items: await items, pagination: {totalItems: totalItems, totalPages: totalPages, options: pagingOptions}};
     }
 
     async create(parentTaskId: number, childTaskId : number, userInfo) : Promise<DependencyPersistType> {
@@ -58,7 +60,7 @@ export class DependencyRepository {
     async delete(parentTaskId : number, dependencyId : number) {
         const depForDelete = this.drizzle.db.select().from(dependencyTable)
             .where(and(eq(dependencyTable.id, dependencyId), eq(dependencyTable.parentTaskId, parentTaskId)));
-        if (depForDelete) 
+        if (await depForDelete) //Протестить
             this.drizzle.db.delete(dependencyTable).where(eq(dependencyTable.id, dependencyId));
         else
             throw new BadRequestException('Не найдена зависимость с идентификатором ${dependencyId} задачи с идентификатором ${parentTaskId}');

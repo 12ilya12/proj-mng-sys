@@ -16,6 +16,8 @@ export class TaskRepository {
 
     async getAll(pagingOptions: Partial<IPagingOptions>, filter: TaskFilterDto, userInfo): Promise<IPaging<TaskPersistType>> {
         let items = this.drizzle.db.select().from(taskTable);
+        const totalItems: number = (await items).length;
+        const totalPages: number = pagingOptions.pageSize ? Math.ceil(totalItems / pagingOptions.pageSize) : 1;
 
         // Фильтруем по категориям и статусам, если были заданы фильтры
         if (filter.categoryId)
@@ -53,7 +55,7 @@ export class TaskRepository {
         if (pagingOptions.page)
            items.offset((Number(pagingOptions.page) - 1) * Number(pagingOptions.pageSize));
 
-        return {items: await items, pagination: {totalItems: 1, totalPages: 1, options: pagingOptions}};
+        return {items: await items, pagination: {totalItems: totalItems, totalPages: totalPages, options: pagingOptions}};
     }
 
     async getById(id: number) : Promise<TaskPersistType> {
@@ -97,7 +99,7 @@ export class TaskRepository {
 
     async delete(id: number) {
         /* await this.drizzle.db.transaction(async (tx) => {
-            if (this.hasTasks(id)) {
+            if (await this.hasTasks(id)) {
                 throw new ConflictException(); //tx.rollback(); ?
             }
             await this.drizzle.db.delete(taskTable).where(eq(taskTable.id, id));
