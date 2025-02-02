@@ -1,4 +1,4 @@
-import { integer, pgTable, text, varchar } from "drizzle-orm/pg-core";
+import { date, integer, pgTable, text, varchar } from "drizzle-orm/pg-core";
 
 export const userTable = pgTable("user", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
@@ -26,6 +26,8 @@ export const taskTable = pgTable("task", {
   categoryId: integer().notNull().references(() => categoryTable.id , { onDelete: 'cascade' } ),
   statusId: integer().notNull().references(() => statusTable.id),
   userId: integer().references(() => userTable.id),
+  deadline: date(),
+  priority: integer().notNull().default(1),
 });
 
 export const dependencyTable = pgTable("dependency", {

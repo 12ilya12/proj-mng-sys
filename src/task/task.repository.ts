@@ -38,6 +38,21 @@ export class TaskRepository {
             case 'name':
                 columnOrderBy = taskTable.name;
                 break;
+            case 'categoryId':
+                columnOrderBy = taskTable.categoryId;
+                break;
+            case 'statusId':
+                columnOrderBy = taskTable.statusId;
+                break;
+            case 'userId':
+                columnOrderBy = taskTable.userId;
+                break;
+            case 'deadline':
+                columnOrderBy = taskTable.deadline;
+                break;
+            case 'priority':
+                columnOrderBy = taskTable.priority;
+                break;
         }
 
         //Сортировка. По умолчанию по возрастанию
