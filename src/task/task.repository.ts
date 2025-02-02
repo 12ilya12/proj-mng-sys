@@ -1,10 +1,10 @@
 //import { drizzle } from "drizzle-orm/postgres-js"
 import { TaskPersistType } from "./task.persistType";
-import { taskTable } from "../db/schema";
+import { dependencyTable, taskTable } from "../db/schema";
 import { DrizzleService } from "../db/drizzle.service";
 import { ConflictException, Injectable } from "@nestjs/common";
 import { IPaging, IPagingOptions } from "../pagination/pagination";
-import { AnyColumn, asc, count, desc, eq, and } from "drizzle-orm";
+import { AnyColumn, asc, count, desc, eq, and, or } from "drizzle-orm";
 import { CreateTaskDto } from "./dto/task.create.dto";
 import { UpdateTaskDto } from "./dto/task.update.dto";
 import { TaskFilterDto } from "./dto/task.filter.dto";
@@ -89,21 +89,20 @@ export class TaskRepository {
         return updatedTask; 
     }
 
-
-
-    /* async hasTasks(id: number) : Promise<boolean> {
-        let taskCount: number;
-        taskCount = (await this.drizzle.db.select({ value: count() }).from(taskTable).where(eq(taskTable.taskId, id)))[0].value;
-        return taskCount > 0;
-    }  */
+    async hasDependencies(id: number) : Promise<boolean> {
+        let dependenciesCount: number;
+        dependenciesCount = (await this.drizzle.db.select({ value: count() }).from(dependencyTable).
+            where(or(eq(dependencyTable.parentTaskId, id), eq(dependencyTable.childTaskId, id))))[0].value;
+        return dependenciesCount > 0;
+    }  
 
     async delete(id: number) {
-        /* await this.drizzle.db.transaction(async (tx) => {
-            if (await this.hasTasks(id)) {
+         await this.drizzle.db.transaction(async (tx) => {
+            if (await this.hasDependencies(id)) {
                 throw new ConflictException(); //tx.rollback(); ?
             }
             await this.drizzle.db.delete(taskTable).where(eq(taskTable.id, id));
-        }); */
+        }); 
         
     }
 }
