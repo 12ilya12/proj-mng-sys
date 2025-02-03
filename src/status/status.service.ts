@@ -32,6 +32,6 @@ export class StatusService {
     }
 
     async delete(id: number) {
-        this.statusRepository.delete(id);
+        await this.statusRepository.delete(id);
     }
 }

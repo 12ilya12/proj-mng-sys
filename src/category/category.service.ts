@@ -39,7 +39,7 @@ export class CategoryService {
     }
 
     async delete(id: number) {
-        this.categoryRepository.delete(id);
+        await this.categoryRepository.delete(id);
     }
 
     async deleteForce(id: number) {

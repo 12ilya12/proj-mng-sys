@@ -60,9 +60,9 @@ export class DependencyRepository {
     async delete(parentTaskId : number, dependencyId : number) {
         const depForDelete = this.drizzle.db.select().from(dependencyTable)
             .where(and(eq(dependencyTable.id, dependencyId), eq(dependencyTable.parentTaskId, parentTaskId)));
-        if (await depForDelete) //Протестить
-            this.drizzle.db.delete(dependencyTable).where(eq(dependencyTable.id, dependencyId));
+        if ((await depForDelete).length !== 0)
+            await this.drizzle.db.delete(dependencyTable).where(eq(dependencyTable.id, dependencyId));
         else
-            throw new BadRequestException('Не найдена зависимость с идентификатором ${dependencyId} задачи с идентификатором ${parentTaskId}');
+            throw new BadRequestException(`Не найдена зависимость с идентификатором ${dependencyId} задачи с идентификатором ${parentTaskId}`);
     }
 }

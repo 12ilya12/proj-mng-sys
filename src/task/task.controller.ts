@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, SetMetadata, UseGuards, Request } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, SetMetadata, UseGuards, Request, ConflictException } from "@nestjs/common";
 import { TaskService } from "./task.service";
 import { TaskDto } from "./dto/task.dto";
 import { IPaging, IPagingOptions } from "../pagination/pagination";
@@ -39,7 +39,7 @@ export class TaskController {
 
     @Delete(':id')
     @SetMetadata('roles', ['ADMIN'])
-    delete(@Param('id') id: number) {
-        this.taskService.delete(id);
+    async delete(@Param('id') id: number) {
+        await this.taskService.delete(id);
     }
 }

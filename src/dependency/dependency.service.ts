@@ -21,6 +21,6 @@ export class DependencyService {
     }
 
     async delete(parentTaskId: number, dependencyId : number) {
-        this.dependencyRepository.delete(parentTaskId, dependencyId);
+        await this.dependencyRepository.delete(parentTaskId, dependencyId);
     }
 }

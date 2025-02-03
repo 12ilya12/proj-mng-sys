@@ -44,8 +44,9 @@ export class CategoryController {
 
     @Delete(':id')
     @SetMetadata('roles', ['ADMIN'])
-    delete(@Param('id') id: number) {
-        this.categoryService.delete(id);
+    async delete(@Param('id') id: number) {
+        await this.categoryService.delete(id);
+
     }
 
     @Delete(':id/force')

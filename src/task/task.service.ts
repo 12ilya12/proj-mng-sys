@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { ConflictException, Injectable } from "@nestjs/common";
 import { TaskDto } from "./dto/task.dto";
 import { TaskRepository } from "./task.repository";
 import { IPaging, IPagingOptions } from "../pagination/pagination";
@@ -38,6 +38,6 @@ export class TaskService {
     }
 
     async delete(id: number) {
-        this.taskRepository.delete(id);
+        await this.taskRepository.delete(id);
     }
 }

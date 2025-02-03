@@ -21,7 +21,7 @@ export class DependencyController {
     }
 
     @Delete(':dependencyId')
-    delete(@Param('taskId') taskId: number, @Param('dependencyId') dependencyId: number) {
-        this.dependencyService.delete(taskId, dependencyId);
+    async delete(@Param('taskId') taskId: number, @Param('dependencyId') dependencyId: number) {
+        await this.dependencyService.delete(taskId, dependencyId);
     }
 }

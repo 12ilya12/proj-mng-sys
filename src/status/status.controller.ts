@@ -38,8 +38,8 @@ export class StatusController {
 
     @Delete(':id')
     @SetMetadata('roles', ['ADMIN'])
-    delete(@Param('id') id: number) {
-        this.statusService.delete(id);
+    async delete(@Param('id') id: number) {
+        await this.statusService.delete(id);
     }
 
 }
