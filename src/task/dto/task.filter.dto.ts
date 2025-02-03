@@ -6,7 +6,5 @@ export class TaskFilterDto {
     
     @IsNumber()
     statusId: number;
-    
-    /* @IsNumber()
-    userId: number; ???*/
+
 }

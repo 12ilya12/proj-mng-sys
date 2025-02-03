@@ -5,4 +5,6 @@ export class TaskPersistType {
     categoryId: number
     statusId: number
     userId: number
+    deadline: string
+    priority: number
 }
