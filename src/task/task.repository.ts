@@ -93,6 +93,10 @@ export class TaskRepository {
     }
 
     async updateStatus(id: number, statusId: number, userId: number) : Promise<TaskPersistType> {
+        //Проверить есть ли таск с id, иначе BadRequest
+        //Проверить есть ли where(and(eq(taskTable.id, id),eq(taskTable.userId, userId)). Иначе Forbidden
+        //С сообщениями поясняющими. Можно в сервис вынести.
+
         /* //Начиная с 0.32 версии Drizzle есть особенность, не позволяющая 
         //передавать в update().set() некоторые отдельные поля (по крайней мере те, что не отмечены как notNull).
         //Если бы statusId не был отмечен как notNull, его можно было бы передать следующим образом.

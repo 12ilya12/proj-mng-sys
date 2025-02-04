@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsDate, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator"
+import { IsDate, IsNotEmpty, IsNumber, IsNumberString, IsOptional, IsString } from "class-validator"
 
 export class UpdateTaskDto {
     @IsString()
@@ -11,15 +11,15 @@ export class UpdateTaskDto {
     @IsOptional()
     description: string;
         
-    @IsNumber()
+    @IsNumberString()
     @IsOptional()
     categoryId: number;
         
-    @IsNumber()
+    @IsNumberString()
     @IsOptional()
     statusId: number;
         
-    @IsNumber()
+    @IsNumberString()
     @IsOptional()
     userId: number;
 
