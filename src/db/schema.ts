@@ -32,7 +32,7 @@ export const taskTable = pgTable("task", {
 
 export const dependencyTable = pgTable("dependency", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  parentTaskId: integer().references(() => taskTable.id),
-	childTaskId: integer().references(() => taskTable.id),
+  parentTaskId: integer().references(() => taskTable.id, { onDelete: 'cascade' }),
+	childTaskId: integer().references(() => taskTable.id, { onDelete: 'cascade' }),
 });
 

@@ -1,5 +1,5 @@
 {
-  "id": "931f09ab-0b51-4875-b305-8bfc82013b26",
+  "id": "46a2a67e-5688-4975-b1f1-9cc37fc0340a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -94,7 +94,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
         "dependency_childTaskId_task_id_fk": {
@@ -107,7 +107,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },

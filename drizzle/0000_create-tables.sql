@@ -37,8 +37,8 @@ CREATE TABLE "user" (
 	CONSTRAINT "user_login_unique" UNIQUE("login")
 );
 --> statement-breakpoint
-ALTER TABLE "dependency" ADD CONSTRAINT "dependency_parentTaskId_task_id_fk" FOREIGN KEY ("parentTaskId") REFERENCES "public"."task"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "dependency" ADD CONSTRAINT "dependency_childTaskId_task_id_fk" FOREIGN KEY ("childTaskId") REFERENCES "public"."task"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "dependency" ADD CONSTRAINT "dependency_parentTaskId_task_id_fk" FOREIGN KEY ("parentTaskId") REFERENCES "public"."task"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "dependency" ADD CONSTRAINT "dependency_childTaskId_task_id_fk" FOREIGN KEY ("childTaskId") REFERENCES "public"."task"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "task" ADD CONSTRAINT "task_categoryId_category_id_fk" FOREIGN KEY ("categoryId") REFERENCES "public"."category"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "task" ADD CONSTRAINT "task_statusId_status_id_fk" FOREIGN KEY ("statusId") REFERENCES "public"."status"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "task" ADD CONSTRAINT "task_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;
