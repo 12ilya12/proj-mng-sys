@@ -45,24 +45,28 @@ export class DependencyRepository {
     }
 
     async create(parentTaskId: number, childTaskId : number, userInfo) : Promise<DependencyPersistType> {
-        const parentTaskUserId = (await this.taskRepository.getById(parentTaskId)).userId;
-        const childTaskUserId = (await this.taskRepository.getById(childTaskId)).userId;
-        //Обычный пользователь может создавать зависимости только между своими задачами
-        if ((userInfo.role === 'USER')&&((userInfo.id !== parentTaskUserId)||(userInfo.id !== childTaskUserId)))
-            throw new ForbiddenException();
-        let newDependency = (await this.drizzle.db.insert(dependencyTable).values({
-            parentTaskId: parentTaskId,
-            childTaskId: childTaskId
-        }).returning())[0];
-        return newDependency;
+        return await this.drizzle.db.transaction(async (tx) => {
+            const parentTaskUserId = (await this.taskRepository.getById(parentTaskId)).userId;
+            const childTaskUserId = (await this.taskRepository.getById(childTaskId)).userId;
+            //Обычный пользователь может создавать зависимости только между своими задачами
+            if ((userInfo.role === 'USER')&&((userInfo.id !== parentTaskUserId)||(userInfo.id !== childTaskUserId)))
+                throw new ForbiddenException();
+            let newDependency = (await this.drizzle.db.insert(dependencyTable).values({
+                parentTaskId: parentTaskId,
+                childTaskId: childTaskId
+            }).returning())[0];
+            return newDependency;
+        });
     }
 
     async delete(parentTaskId : number, dependencyId : number) {
-        const depForDelete = this.drizzle.db.select().from(dependencyTable)
-            .where(and(eq(dependencyTable.id, dependencyId), eq(dependencyTable.parentTaskId, parentTaskId)));
-        if ((await depForDelete).length !== 0)
-            await this.drizzle.db.delete(dependencyTable).where(eq(dependencyTable.id, dependencyId));
-        else
-            throw new BadRequestException(`Не найдена зависимость с идентификатором ${dependencyId} задачи с идентификатором ${parentTaskId}`);
+        await this.drizzle.db.transaction(async (tx) => {
+            const depForDelete = this.drizzle.db.select().from(dependencyTable)
+                .where(and(eq(dependencyTable.id, dependencyId), eq(dependencyTable.parentTaskId, parentTaskId)));
+            if ((await depForDelete).length !== 0)
+                await this.drizzle.db.delete(dependencyTable).where(eq(dependencyTable.id, dependencyId));
+            else
+                throw new BadRequestException(`Не найдена зависимость с идентификатором ${dependencyId} задачи с идентификатором ${parentTaskId}`);
+        });
     }
 }

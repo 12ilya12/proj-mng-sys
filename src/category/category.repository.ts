@@ -77,7 +77,7 @@ export class CategoryRepository {
     async delete(id: number) {
         await this.drizzle.db.transaction(async (tx) => {
             if (await this.hasTasks(id)) {
-                throw new ConflictException(); //tx.rollback(); ?
+                throw new ConflictException();
             }
             await this.drizzle.db.delete(categoryTable).where(eq(categoryTable.id, id));
         });
