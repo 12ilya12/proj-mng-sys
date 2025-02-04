@@ -1,4 +1,4 @@
-import { IsBoolean, IsNotEmpty, IsString } from "class-validator"
+import { IsBoolean, IsNotEmpty } from "class-validator"
 
 export class CategoryHasTasksDto {
     @IsBoolean()

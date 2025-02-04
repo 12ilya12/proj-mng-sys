@@ -6,8 +6,10 @@ export class DependencyDto {
     id: number;
 
     @IsNumber()
+    @IsNotEmpty()
     parentTaskId: number;
 
     @IsNumber()
+    @IsNotEmpty()
     childTaskId: number;
 }

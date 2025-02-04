@@ -16,8 +16,6 @@ export class TaskRepository {
 
     async getAll(pagingOptions: Partial<IPagingOptions>, filter: TaskFilterDto, userInfo): Promise<IPaging<TaskPersistType>> {
         let items = this.drizzle.db.select().from(taskTable);
-        const totalItems: number = (await items).length;
-        const totalPages: number = pagingOptions.pageSize ? Math.ceil(totalItems / pagingOptions.pageSize) : 1;
 
         // Фильтруем по категориям и статусам, если были заданы фильтры
         if (filter.categoryId)
@@ -28,6 +26,9 @@ export class TaskRepository {
         //Ролевая фильтрация. Если обычный пользователь, запрашиваем только его задачи.
         if (userInfo.role == 'USER')
             items.where(eq(taskTable.userId, userInfo.id));
+
+        const totalItems: number = (await items).length;
+        const totalPages: number = pagingOptions.pageSize ? Math.ceil(totalItems / pagingOptions.pageSize) : 1;
 
         //Определяем по какой колонке сортируем, если это потребуется. По умолчанию, будем сортировать по id.
         let columnOrderBy: AnyColumn = taskTable.id;

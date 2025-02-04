@@ -9,7 +9,7 @@ export const toUserDto = (data: UserPersistType): UserDto => {
     login, 
     fullName, 
     email, 
-    role
+    role: role as 'ADMIN'|'USER'
   };
 
   return userDto;

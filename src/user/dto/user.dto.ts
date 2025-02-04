@@ -1,19 +1,23 @@
-import { IsNotEmpty, IsEmail } from 'class-validator';
+import { IsNotEmpty, IsEmail, IsNumber, IsString } from 'class-validator';
 
 export class UserDto {
+  @IsNumber()
   @IsNotEmpty()
   id: number;
 
+  @IsString()
   @IsNotEmpty()
   login: string;
 
+  @IsString()
   @IsNotEmpty()
   fullName: string;
 
-  @IsNotEmpty()
   @IsEmail()
+  @IsNotEmpty()
   email: string;
 
-  @IsNotEmpty()//TODO: Валидация. Только "ADMIN" или "USER" 
-  role: string;
+  @IsString()
+  @IsNotEmpty()
+  role: 'ADMIN'|'USER';
 }

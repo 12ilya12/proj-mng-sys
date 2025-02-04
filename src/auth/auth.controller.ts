@@ -8,7 +8,7 @@ import { RegistrationStatus } from "./registrationStatus";
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @UsePipes(new ValidationPipe())
+  //@UsePipes(new ValidationPipe())
   @Post('register')
   public async register(
     @Body() createUserDto: CreateUserDto
@@ -22,7 +22,7 @@ export class AuthController {
     return result;
   }
 
-  @UsePipes(new ValidationPipe())
+  //@UsePipes(new ValidationPipe())
   @Post('login')
   public async login(@Body() loginUserDto: LoginUserDto) {
     return await this.authService.login(loginUserDto);
