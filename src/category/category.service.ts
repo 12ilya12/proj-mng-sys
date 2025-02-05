@@ -13,7 +13,7 @@ export class CategoryService {
     constructor(private categoryRepository: CategoryRepository) {}
 
     async getAll(pagingOptions: Partial<IPagingOptions>): Promise<IPaging<CategoryDto>> {
-        ParamsValidation.validatePagingOptions(pagingOptions)
+        ParamsValidation.validatePagingOptions(pagingOptions);
         let result = await this.categoryRepository.getAll(pagingOptions);
         let categories = toCategoryDtoArray(result.items);
         return { items: categories, 

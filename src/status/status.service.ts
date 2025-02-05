@@ -12,6 +12,7 @@ export class StatusService {
     constructor(private statusRepository: StatusRepository) {}
 
     async getAll(pagingOptions: Partial<IPagingOptions>): Promise<IPaging<StatusDto>> {
+        ParamsValidation.validatePagingOptions(pagingOptions);
         let result = await this.statusRepository.getAll(pagingOptions);
         let statuses = toStatusDtoArray(result.items);
         return { items: statuses, pagination: result.pagination };

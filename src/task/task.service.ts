@@ -14,6 +14,7 @@ export class TaskService {
     constructor(private taskRepository: TaskRepository) {}
 
     async getAll(pagingOptions: Partial<IPagingOptions>, filter: TaskFilterDto, userInfo): Promise<IPaging<TaskDto>> {
+        ParamsValidation.validatePagingOptions(pagingOptions);
         let result = await this.taskRepository.getAll(pagingOptions, filter, userInfo);
         let tasks = toTaskDtoArray(result.items);
         return { items: tasks, pagination: result.pagination };

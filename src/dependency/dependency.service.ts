@@ -12,6 +12,7 @@ export class DependencyService {
 
     async getAll(parentTaskId: number, pagingOptions: Partial<IPagingOptions>): Promise<IPaging<DependencyDto>> {
         ParamsValidation.validateId(parentTaskId);
+        ParamsValidation.validatePagingOptions(pagingOptions);
         let result = await this.dependencyRepository.getAll(parentTaskId, pagingOptions);
         let dependencies = toDependencyDtoArray(result.items)
         return { items: dependencies, pagination: result.pagination };
