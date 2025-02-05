@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from "@nestjs/common";
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { TaskDto } from "./dto/task.dto";
 import { TaskRepository } from "./task.repository";
 import { IPaging, IPagingOptions } from "../pagination/pagination";
@@ -7,6 +7,7 @@ import { CreateTaskDto } from "./dto/task.create.dto";
 import { UpdateTaskDto } from "./dto/task.update.dto";
 import { TaskFilterDto } from "./dto/task.filter.dto";
 import { TaskPersistType } from "./task.persistType";
+import { ParamsValidation } from "src/common/paramsValidation";
 
 @Injectable()
 export class TaskService {
@@ -19,7 +20,10 @@ export class TaskService {
     }
 
     async getById(id: number) : Promise<TaskDto> {
+        ParamsValidation.validateId(id);
         let task = await this.taskRepository.getById(id);
+        if (task == null)
+            throw new NotFoundException(`Не найдена задача с идентификатором ${id}`);
         return toTaskDto(task);
     }
 
@@ -29,15 +33,19 @@ export class TaskService {
     } 
 
     async update(id: number, updateTaskDto: UpdateTaskDto, userInfo) : Promise<TaskDto> {
+        ParamsValidation.validateId(id);
         let updatedTask: TaskPersistType;
         if (userInfo.role === "ADMIN")
             updatedTask = await this.taskRepository.update(id, updateTaskDto);
         if (userInfo.role === "USER")
             updatedTask = await this.taskRepository.updateStatus(id, updateTaskDto.statusId, userInfo.id);
+        if (updatedTask == null)
+            throw new NotFoundException(`Не найдена задача с идентификатором ${id}`);
         return toTaskDto(updatedTask);
     }
 
     async delete(id: number) {
+        ParamsValidation.validateId(id);
         await this.taskRepository.delete(id);
     }
 }
