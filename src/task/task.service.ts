@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { TaskDto } from "./dto/task.dto";
 import { TaskRepository } from "./task.repository";
 import { IPaging, IPagingOptions } from "../pagination/pagination";
@@ -7,7 +7,7 @@ import { CreateTaskDto } from "./dto/task.create.dto";
 import { UpdateTaskDto } from "./dto/task.update.dto";
 import { TaskFilterDto } from "./dto/task.filter.dto";
 import { TaskPersistType } from "./task.persistType";
-import { ParamsValidation } from "src/common/paramsValidation";
+import { ParamsValidation } from "../common/paramsValidation";
 
 @Injectable()
 export class TaskService {
