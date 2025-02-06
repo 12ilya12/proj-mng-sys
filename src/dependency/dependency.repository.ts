@@ -50,7 +50,7 @@ export class DependencyRepository {
             const childTaskUserId = (await this.taskRepository.getById(childTaskId)).userId;
             //Обычный пользователь может создавать зависимости только между своими задачами
             if ((userInfo.role === 'USER')&&((userInfo.id !== parentTaskUserId)||(userInfo.id !== childTaskUserId)))
-                throw new ForbiddenException();
+                throw new ForbiddenException('Пользователь может создавать зависимости только между своими задачами');
             let newDependency = (await this.drizzle.db.insert(dependencyTable).values({
                 parentTaskId: parentTaskId,
                 childTaskId: childTaskId
