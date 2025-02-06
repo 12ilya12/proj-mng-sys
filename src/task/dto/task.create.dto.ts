@@ -1,5 +1,4 @@
-import { Type } from "class-transformer";
-import { IsDate, IsNotEmpty, IsNumber, IsNumberString, IsString } from "class-validator"
+import { IsISO8601, IsNotEmpty, IsNumberString, IsString } from "class-validator"
 
 export class CreateTaskDto {
     @IsString()
@@ -18,8 +17,7 @@ export class CreateTaskDto {
     @IsNumberString()
     userId: number;
 
-    @IsDate()
-    @Type(() => Date)
+    @IsISO8601( {strict: true} )
     deadline: Date
 
     @IsNumberString()

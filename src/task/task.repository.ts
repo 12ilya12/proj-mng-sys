@@ -2,7 +2,7 @@
 import { TaskPersistType } from "./task.persistType";
 import { dependencyTable, taskTable } from "../db/schema";
 import { DrizzleService } from "../db/drizzle.service";
-import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { IPaging, IPagingOptions } from "../pagination/pagination";
 import { AnyColumn, asc, count, desc, eq, and, or } from "drizzle-orm";
 import { CreateTaskDto } from "./dto/task.create.dto";
@@ -86,14 +86,14 @@ export class TaskRepository {
         }); 
     }
 
-    async taskForUser(taskId, userId) : Promise<boolean> {
+    async taskForUser(taskId: number, userId: number) : Promise<boolean> {
         return (await this.drizzle.db.select().from(taskTable).where(and(eq(taskTable.id, taskId),eq(taskTable.userId, userId)))).length === 0;
     }
 
     async update(id: number, taskInfo: UpdateTaskDto) : Promise<TaskPersistType> {
         let updatedTask = (await this.drizzle.db.update(taskTable).
             set(taskInfo).where(eq(taskTable.id, id)).returning())[0];
-        return updatedTask;
+        return updatedTask;       
     }
 
     async updateStatus(id: number, statusId: number, userId: number) : Promise<TaskPersistType> {

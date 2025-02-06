@@ -9,6 +9,11 @@ import { CreateUserDto } from "./dto/user.create.dto";
 export class UserRepository {
     constructor(private drizzle: DrizzleService) {}
 
+    async findById(id: number) : Promise<UserPersistType> {
+        let user = (await this.drizzle.db.select().from(userTable).where(eq(userTable.id, id)))[0];
+        return user;
+    }
+
     async findByLogin(login: string) : Promise<UserPersistType> {
         let user = (await this.drizzle.db.select().from(userTable).where(eq(userTable.login, login)))[0];
         return user;

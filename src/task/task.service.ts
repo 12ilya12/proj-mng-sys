@@ -8,10 +8,17 @@ import { UpdateTaskDto } from "./dto/task.update.dto";
 import { TaskFilterDto } from "./dto/task.filter.dto";
 import { TaskPersistType } from "./task.persistType";
 import { ParamsValidation } from "../common/paramsValidation";
+import { CategoryRepository } from "../category/category.repository";
+import { StatusRepository } from "../status/status.repository";
+import { UserRepository } from "../user/user.repository";
 
 @Injectable()
 export class TaskService {
-    constructor(private taskRepository: TaskRepository) {}
+    constructor(private taskRepository: TaskRepository,
+        private categoryRepository: CategoryRepository,
+        private statusRepository: StatusRepository,
+        private userRepository: UserRepository,
+    ) {}
 
     async getAll(pagingOptions: Partial<IPagingOptions>, filter: TaskFilterDto, userInfo): Promise<IPaging<TaskDto>> {
         ParamsValidation.validatePagingOptions(pagingOptions);
@@ -29,6 +36,15 @@ export class TaskService {
     }
 
     async create(createTaskDto: CreateTaskDto): Promise<TaskDto> {
+        if (await this.categoryRepository.getById(createTaskDto.categoryId) == null) {
+            throw new NotFoundException(`Не найдена категория с идентификатором ${createTaskDto.categoryId}`);
+        } 
+        if (await this.statusRepository.getById(createTaskDto.statusId) == null) {
+            throw new NotFoundException(`Не найден статус с идентификатором ${createTaskDto.statusId}`);
+        } 
+        if (await this.userRepository.findById(createTaskDto.userId) == null) {
+            throw new NotFoundException(`Не найден пользователь с идентификатором ${createTaskDto.userId}`);
+        } 
         let newTask = await this.taskRepository.create(createTaskDto);
         return toTaskDto(newTask);
     } 
@@ -38,6 +54,15 @@ export class TaskService {
         if (await this.taskRepository.getById(id) == null) {
             throw new NotFoundException(`Не найдена задача с идентификатором ${id}`);
         }
+        if (await this.categoryRepository.getById(updateTaskDto.categoryId) == null) {
+            throw new NotFoundException(`Не найдена категория с идентификатором ${updateTaskDto.categoryId}`);
+        } 
+        if (await this.statusRepository.getById(updateTaskDto.statusId) == null) {
+            throw new NotFoundException(`Не найден статус с идентификатором ${updateTaskDto.statusId}`);
+        } 
+        if (await this.userRepository.findById(updateTaskDto.userId) == null) {
+            throw new NotFoundException(`Не найден пользователь с идентификатором ${updateTaskDto.userId}`);
+        } 
         let updatedTask: TaskPersistType;
         if (userInfo.role === "ADMIN")
             updatedTask = await this.taskRepository.update(id, updateTaskDto);
