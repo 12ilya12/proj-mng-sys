@@ -2,7 +2,7 @@
 import { StatusPersistType } from "./status.persistType";
 import { statusTable, taskTable } from "../db/schema";
 import { DrizzleService } from "../db/drizzle.service";
-import { ConflictException, Injectable } from "@nestjs/common";
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { IPaging, IPagingOptions } from "../pagination/pagination";
 import { AnyColumn, asc, count, desc, eq } from "drizzle-orm";
 import { CreateStatusDto } from "./dto/status.create.dto";
@@ -76,8 +76,12 @@ export class StatusRepository {
 
     async delete(id: number) {
         await this.drizzle.db.transaction(async (tx) => {
+            const statusForDelete = await this.drizzle.db.select().from(statusTable).where(eq(statusTable.id, id)); 
+            if (statusForDelete.length === 0) {
+                throw new NotFoundException(`Не найден статус с идентификатором ${id}`);
+            }
             if (await this.hasTasks(id)) {
-                throw new ConflictException(); //tx.rollback(); ?
+                throw new ConflictException("У данного статуса есть связанные задачи");
             }
             await this.drizzle.db.delete(statusTable).where(eq(statusTable.id, id));
         });

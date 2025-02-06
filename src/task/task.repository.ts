@@ -2,7 +2,7 @@
 import { TaskPersistType } from "./task.persistType";
 import { dependencyTable, taskTable } from "../db/schema";
 import { DrizzleService } from "../db/drizzle.service";
-import { ConflictException, Injectable } from "@nestjs/common";
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { IPaging, IPagingOptions } from "../pagination/pagination";
 import { AnyColumn, asc, count, desc, eq, and, or } from "drizzle-orm";
 import { CreateTaskDto } from "./dto/task.create.dto";
@@ -86,6 +86,10 @@ export class TaskRepository {
         }); 
     }
 
+    async taskForUser(taskId, userId) : Promise<boolean> {
+        return (await this.drizzle.db.select().from(taskTable).where(and(eq(taskTable.id, taskId),eq(taskTable.userId, userId)))).length === 0;
+    }
+
     async update(id: number, taskInfo: UpdateTaskDto) : Promise<TaskPersistType> {
         let updatedTask = (await this.drizzle.db.update(taskTable).
             set(taskInfo).where(eq(taskTable.id, id)).returning())[0];
@@ -93,10 +97,6 @@ export class TaskRepository {
     }
 
     async updateStatus(id: number, statusId: number, userId: number) : Promise<TaskPersistType> {
-        //Проверить есть ли таск с id, иначе BadRequest
-        //Проверить есть ли where(and(eq(taskTable.id, id),eq(taskTable.userId, userId)). Иначе Forbidden
-        //С сообщениями поясняющими. Можно в сервис вынести.
-
         /* //Начиная с 0.32 версии Drizzle есть особенность, не позволяющая 
         //передавать в update().set() некоторые отдельные поля (по крайней мере те, что не отмечены как notNull).
         //Если бы statusId не был отмечен как notNull, его можно было бы передать следующим образом.
@@ -118,8 +118,12 @@ export class TaskRepository {
 
     async delete(id: number) {
          await this.drizzle.db.transaction(async (tx) => {
+            const taskForDelete = await this.drizzle.db.select().from(taskTable).where(eq(taskTable.id, id)); 
+            if (taskForDelete.length === 0) {
+                throw new NotFoundException(`Не найдена задача с идентификатором ${id}`);
+            }
             if (await this.hasDependencies(id)) {
-                throw new ConflictException(); //tx.rollback(); ?
+                throw new ConflictException('У данной задачи есть зависимости');
             }
             await this.drizzle.db.delete(taskTable).where(eq(taskTable.id, id));
         }); 

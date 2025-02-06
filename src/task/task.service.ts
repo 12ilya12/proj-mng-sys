@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { TaskDto } from "./dto/task.dto";
 import { TaskRepository } from "./task.repository";
 import { IPaging, IPagingOptions } from "../pagination/pagination";
@@ -35,13 +35,18 @@ export class TaskService {
 
     async update(id: number, updateTaskDto: UpdateTaskDto, userInfo) : Promise<TaskDto> {
         ParamsValidation.validateId(id);
+        if (await this.taskRepository.getById(id) == null) {
+            throw new NotFoundException(`Не найдена задача с идентификатором ${id}`);
+        }
         let updatedTask: TaskPersistType;
         if (userInfo.role === "ADMIN")
             updatedTask = await this.taskRepository.update(id, updateTaskDto);
-        if (userInfo.role === "USER")
+        if (userInfo.role === "USER") {
+            if (await this.taskRepository.taskForUser(id, userInfo.id)) {
+                throw new ForbiddenException('Задача не связана с текущим пользователем');
+            }
             updatedTask = await this.taskRepository.updateStatus(id, updateTaskDto.statusId, userInfo.id);
-        if (updatedTask == null)
-            throw new NotFoundException(`Не найдена задача с идентификатором ${id}`);
+        }
         return toTaskDto(updatedTask);
     }
 

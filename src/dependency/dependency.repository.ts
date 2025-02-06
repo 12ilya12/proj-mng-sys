@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { DrizzleService } from "../db/drizzle.service";
 import { IPaging, IPagingOptions } from "../pagination/pagination";
 import { DependencyPersistType } from "./dependency.persistType";
@@ -66,7 +66,7 @@ export class DependencyRepository {
             if ((await depForDelete).length !== 0)
                 await this.drizzle.db.delete(dependencyTable).where(eq(dependencyTable.id, dependencyId));
             else
-                throw new BadRequestException(`Не найдена зависимость с идентификатором ${dependencyId} задачи с идентификатором ${parentTaskId}`);
+                throw new NotFoundException(`Не найдена зависимость с идентификатором ${dependencyId} задачи с идентификатором ${parentTaskId}`);
         });
     }
 }

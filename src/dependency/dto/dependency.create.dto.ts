@@ -1,7 +1,7 @@
-import { IsNotEmpty, IsNumber } from "class-validator"
+import { IsNotEmpty, IsNumberString } from "class-validator"
 
 export class CreateDependencyDto {
-    @IsNumber()
+    @IsNumberString()
     @IsNotEmpty()
     childTaskId: number;
 }

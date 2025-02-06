@@ -44,7 +44,7 @@ export class CategoryService {
 
     async hasTasks(id: number) : Promise<CategoryHasTasksDto> {
         ParamsValidation.validateId(id);
-        return { hasTasks: await this.categoryRepository.hasTasks(id) };    //Проверить что будет если не найдена задача с id
+        return { hasTasks: await this.categoryRepository.hasTasks(id) };
     }
 
     async delete(id: number) {
@@ -54,6 +54,6 @@ export class CategoryService {
 
     async deleteForce(id: number) {
         ParamsValidation.validateId(id);
-        this.categoryRepository.deleteForce(id);
+        await this.categoryRepository.deleteForce(id);
     }
 }

@@ -28,7 +28,7 @@ export class UpdateTaskDto {
     @Type(() => Date)
     deadline: Date
         
-    @IsNumber()
+    @IsNumberString()
     @IsOptional()
     priority: number;
 }

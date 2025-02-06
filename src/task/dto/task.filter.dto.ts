@@ -1,11 +1,11 @@
-import { IsNumber, IsOptional } from "class-validator"
+import { IsNumberString, IsOptional } from "class-validator"
 
 export class TaskFilterDto {
-    @IsNumber()
+    @IsNumberString()
     @IsOptional()
     categoryId: number;
     
-    @IsNumber()
+    @IsNumberString()
     @IsOptional()
     statusId: number;
 

@@ -2,7 +2,7 @@
 import { CategoryPersistType } from "./category.persistType";
 import { categoryTable, taskTable } from "../db/schema";
 import { DrizzleService } from "../db/drizzle.service";
-import { ConflictException, Injectable } from "@nestjs/common";
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { IPaging, IPagingOptions } from "../pagination/pagination";
 import { AnyColumn, asc, count, desc, eq } from "drizzle-orm";
 import { CreateCategoryDto } from "./dto/category.create.dto";
@@ -76,8 +76,12 @@ export class CategoryRepository {
 
     async delete(id: number) {
         await this.drizzle.db.transaction(async (tx) => {
+            const categoryForDelete = await this.drizzle.db.select().from(categoryTable).where(eq(categoryTable.id, id)); 
+            if (categoryForDelete.length === 0) {
+                throw new NotFoundException(`Не найдена категория с идентификатором ${id}`);
+            }
             if (await this.hasTasks(id)) {
-                throw new ConflictException();
+                throw new ConflictException("У данной категории есть связанные задачи");
             }
             await this.drizzle.db.delete(categoryTable).where(eq(categoryTable.id, id));
         });
@@ -85,6 +89,10 @@ export class CategoryRepository {
 
     async deleteForce(id: number) {
         await this.drizzle.db.transaction(async (tx) => {
+            const categoryForDelete = await this.drizzle.db.select().from(categoryTable).where(eq(categoryTable.id, id)); 
+            if (categoryForDelete.length === 0) {
+                throw new NotFoundException(`Не найдена категория с идентификатором ${id}`);
+            }
             await this.drizzle.db.delete(categoryTable).where(eq(categoryTable.id, id));
         });
     }
