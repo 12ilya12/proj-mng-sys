@@ -4,7 +4,7 @@ import { dependencyTable, taskTable } from "../db/schema";
 import { DrizzleService } from "../db/drizzle.service";
 import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { IPaging, IPagingOptions } from "../pagination/pagination";
-import { AnyColumn, asc, count, desc, eq, and, or } from "drizzle-orm";
+import { AnyColumn, asc, count, desc, eq, and, or, SQLWrapper } from "drizzle-orm";
 import { CreateTaskDto } from "./dto/task.create.dto";
 import { UpdateTaskDto } from "./dto/task.update.dto";
 import { TaskFilterDto } from "./dto/task.filter.dto";
@@ -15,17 +15,19 @@ export class TaskRepository {
     constructor(private drizzle: DrizzleService) {}
 
     async getAll(pagingOptions: Partial<IPagingOptions>, filter: TaskFilterDto, userInfo): Promise<IPaging<TaskPersistType>> {
-        let items = this.drizzle.db.select().from(taskTable);
+        const filters : SQLWrapper[] = [];
 
         // Фильтруем по категориям и статусам, если были заданы фильтры
         if (filter.categoryId)
-            items.where(eq(taskTable.categoryId, filter.categoryId));
+            filters.push(eq(taskTable.categoryId, filter.categoryId));
         if (filter.statusId)
-            items.where(eq(taskTable.statusId, filter.statusId));
+            filters.push(eq(taskTable.statusId, filter.statusId));
 
         //Ролевая фильтрация. Если обычный пользователь, запрашиваем только его задачи.
         if (userInfo.role == 'USER')
-            items.where(eq(taskTable.userId, userInfo.id));
+            filters.push(eq(taskTable.userId, userInfo.id));
+
+        let items = this.drizzle.db.select().from(taskTable).where(and(...filters));
 
         const totalItems: number = (await items).length;
         const totalPages: number = pagingOptions.pageSize ? Math.ceil(totalItems / pagingOptions.pageSize) : 1;
