@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { TaskDto } from "./dto/task.dto";
 import { TaskRepository } from "./task.repository";
 import { IPaging, IPagingOptions } from "../pagination/pagination";
@@ -54,21 +54,29 @@ export class TaskService {
         if (await this.taskRepository.getById(id) == null) {
             throw new NotFoundException(`Не найдена задача с идентификатором ${id}`);
         }
-        if (await this.categoryRepository.getById(updateTaskDto.categoryId) == null) {
+        if ((updateTaskDto.categoryId != null) && (await this.categoryRepository.getById(updateTaskDto.categoryId) == null)) {
             throw new NotFoundException(`Не найдена категория с идентификатором ${updateTaskDto.categoryId}`);
         } 
-        if (await this.statusRepository.getById(updateTaskDto.statusId) == null) {
+        if ((updateTaskDto.statusId != null) && (await this.statusRepository.getById(updateTaskDto.statusId) == null)) {
             throw new NotFoundException(`Не найден статус с идентификатором ${updateTaskDto.statusId}`);
         } 
-        if (await this.userRepository.findById(updateTaskDto.userId) == null) {
+        if ((updateTaskDto.userId != null) && (await this.userRepository.findById(updateTaskDto.userId) == null)) {
             throw new NotFoundException(`Не найден пользователь с идентификатором ${updateTaskDto.userId}`);
         } 
         let updatedTask: TaskPersistType;
         if (userInfo.role === "ADMIN")
+            if ((updateTaskDto.categoryId == null)&&(updateTaskDto.statusId == null)&&
+                (updateTaskDto.name == null)&&(updateTaskDto.description == null)&&
+                (updateTaskDto.deadline == null)&&(updateTaskDto.priority == null)&&(updateTaskDto.userId == null)) {
+                    throw new BadRequestException('Нет значений для обновления задачи');
+                }
             updatedTask = await this.taskRepository.update(id, updateTaskDto);
         if (userInfo.role === "USER") {
             if (await this.taskRepository.taskForUser(id, userInfo.id)) {
                 throw new ForbiddenException('Задача не связана с текущим пользователем');
+            }
+            if (updateTaskDto.statusId == null) {
+                throw new BadRequestException("Пользователь может обновить только статус задачи. Требуется statusId.")
             }
             updatedTask = await this.taskRepository.updateStatus(id, updateTaskDto.statusId, userInfo.id);
         }

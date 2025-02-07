@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { DependencyDto } from "./dto/dependency.dto";
 import { IPaging, IPagingOptions } from "../pagination/pagination";
 import { DependencyRepository } from "./dependency.repository";
@@ -27,6 +27,9 @@ export class DependencyService {
         if (await this.taskRepository.getById(createDependencyDto.childTaskId) == null) {
             throw new NotFoundException(`Не найдена задача с идентификатором ${createDependencyDto.childTaskId}`);
         } 
+        if (parentTaskId == createDependencyDto.childTaskId) {
+            throw new BadRequestException('Нельзя связать задачу саму с собой');
+        }
         let newTask = await this.dependencyRepository.create(parentTaskId, createDependencyDto.childTaskId, userInfo);
         return toDependencyDto(newTask);
     }
