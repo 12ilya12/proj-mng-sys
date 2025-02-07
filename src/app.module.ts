@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
+//import { AppService } from './app.service';
 import { CategoryController } from './category/category.controller';
 import { CategoryService } from './category/category.service';
 import { CategoryRepository } from './category/category.repository';
@@ -27,7 +27,7 @@ import { DependencyRepository } from './dependency/dependency.repository';
   imports: [DrizzleModule, ConfigModule.forRoot( { isGlobal:true } )],
   controllers: [AppController, AuthController, CategoryController, StatusController, TaskController, DependencyController],
   providers: [
-    AppService, 
+    //AppService, 
     DrizzleService, 
     JwtService,
     AuthService, 
