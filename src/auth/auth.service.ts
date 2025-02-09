@@ -30,28 +30,10 @@ export class AuthService {
     return status;
   }
 
-  async login(loginUserDto: LoginUserDto)/* : Promise<LoginStatus> */ {
+  async login(loginUserDto: LoginUserDto) {
     const user = await this.userService.findByLogin(loginUserDto);
     const dataForToken = {id: user.id, role: user.role};
     const token = this.jwtService.signAsync(dataForToken , { secret: process.env.JWT_SECRET } );
     return token;
-
-    /* const token = this._createToken(user);
-    return {
-      login: user.login,
-      ...token,
-    }; */
   }
-
- /*  private _createToken({ login }: UserDto): any {
-    const expiresIn = process.env.EXPIRESIN + '';
-    const user: JwtPayload = { login };
-    const accessToken = this.jwtService.sign(user);
-
-    return {
-      expiresIn,
-      accessToken,
-    };
-  } */
-
 }

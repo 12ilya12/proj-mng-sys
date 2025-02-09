@@ -1,3 +1,5 @@
+import { ApiQuery } from "@nestjs/swagger"
+
 export interface IPagingOptions {
     page: number
     pageSize: number
