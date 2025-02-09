@@ -6,7 +6,7 @@ WORKDIR /app
 
 # Install dependencies
 COPY package*.json ./
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # Copy source code
 COPY . .
@@ -21,7 +21,7 @@ FROM node:18-alpine
 WORKDIR /app
 # Install production dependencies
 COPY --from=builder /app/package*.json ./
-RUN npm install --only=production
+RUN npm install --legacy-peer-deps --only=production
 
 # Copy build files
 COPY --from=builder /app/dist ./dist
@@ -29,4 +29,4 @@ COPY --from=builder /app/dist ./dist
 # Expose port
 EXPOSE 3000
 # Start the application
-CMD ["node", "dist/main"]
+CMD ["node", "dist/src/main"]
