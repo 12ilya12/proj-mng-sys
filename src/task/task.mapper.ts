@@ -1,8 +1,17 @@
-import { TaskDto } from '../task/dto/task.dto';
-import { TaskPersistType } from '../task/task.persistType';
+import { TaskDto } from '../task/dto/task.dto'
+import { TaskPersistType } from '../task/task.persistType'
 
 export const toTaskDto = (data: TaskPersistType): TaskDto => {
-  const { id, name, description, categoryId, statusId, userId, deadline, priority } = data;
+  const {
+    id,
+    name,
+    description,
+    categoryId,
+    statusId,
+    userId,
+    deadline,
+    priority
+  } = data
 
   const taskDto: TaskDto = {
     id,
@@ -13,18 +22,38 @@ export const toTaskDto = (data: TaskPersistType): TaskDto => {
     userId,
     deadline: new Date(deadline),
     priority
-  };
+  }
 
-  return taskDto;
-};
+  return taskDto
+}
 
-export const toTaskDtoArray = (data: TaskPersistType[]): TaskDto[] => {
-    let taskDtos = [];
-    
-    data.forEach(function(taskPersist) {
-        const { id, name, description, categoryId, statusId, userId, deadline, priority } = taskPersist;
-        taskDtos.push({ id, name, description, categoryId, statusId, userId, deadline, priority });
-    });
+export const toTaskDtoArray = (
+  data: TaskPersistType[]
+): TaskDto[] => {
+  let taskDtos = []
 
-    return taskDtos;
-  };
+  data.forEach(function (taskPersist) {
+    const {
+      id,
+      name,
+      description,
+      categoryId,
+      statusId,
+      userId,
+      deadline,
+      priority
+    } = taskPersist
+    taskDtos.push({
+      id,
+      name,
+      description,
+      categoryId,
+      statusId,
+      userId,
+      deadline,
+      priority
+    })
+  })
+
+  return taskDtos
+}

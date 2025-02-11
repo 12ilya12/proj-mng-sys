@@ -1,38 +1,51 @@
-import { date, integer, pgTable, text, varchar } from "drizzle-orm/pg-core";
+import {
+  date,
+  integer,
+  pgTable,
+  text,
+  varchar
+} from 'drizzle-orm/pg-core'
 
-export const userTable = pgTable("user", {
+export const userTable = pgTable('user', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   login: varchar({ length: 255 }).notNull().unique(),
   password: varchar({ length: 255 }).notNull(),
   fullName: varchar({ length: 255 }).notNull(),
   email: varchar({ length: 255 }).notNull(),
-  role: varchar({ length: 255 }).notNull(),
-});
+  role: varchar({ length: 255 }).notNull()
+})
 
-export const categoryTable = pgTable("category", {
+export const categoryTable = pgTable('category', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  name: varchar({ length: 255 }).notNull().unique(),
-});
+  name: varchar({ length: 255 }).notNull().unique()
+})
 
-export const statusTable = pgTable("status", {
+export const statusTable = pgTable('status', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  name: varchar({ length: 255 }).notNull().unique(),
-});
+  name: varchar({ length: 255 }).notNull().unique()
+})
 
-export const taskTable = pgTable("task", {
+export const taskTable = pgTable('task', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   name: varchar({ length: 255 }).notNull(),
   description: text().notNull(),
-  categoryId: integer().notNull().references(() => categoryTable.id , { onDelete: 'cascade' } ),
-  statusId: integer().notNull().references(() => statusTable.id),
+  categoryId: integer()
+    .notNull()
+    .references(() => categoryTable.id, { onDelete: 'cascade' }),
+  statusId: integer()
+    .notNull()
+    .references(() => statusTable.id),
   userId: integer().references(() => userTable.id),
   deadline: date(),
-  priority: integer().notNull().default(1),
-});
+  priority: integer().notNull().default(1)
+})
 
-export const dependencyTable = pgTable("dependency", {
+export const dependencyTable = pgTable('dependency', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  parentTaskId: integer().references(() => taskTable.id, { onDelete: 'cascade' }),
-	childTaskId: integer().references(() => taskTable.id, { onDelete: 'cascade' }),
-});
-
+  parentTaskId: integer().references(() => taskTable.id, {
+    onDelete: 'cascade'
+  }),
+  childTaskId: integer().references(() => taskTable.id, {
+    onDelete: 'cascade'
+  })
+})

@@ -1,9 +1,9 @@
-import { Injectable } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
-import { UserService } from "../user/user.service";
-import { CreateUserDto } from "../user/dto/user.create.dto";
-import { LoginUserDto } from "../user/dto/user.login.dto";
-import { RegistrationStatus } from "./registrationStatus";
+import { Injectable } from '@nestjs/common'
+import { JwtService } from '@nestjs/jwt'
+import { UserService } from '../user/user.service'
+import { CreateUserDto } from '../user/dto/user.create.dto'
+import { LoginUserDto } from '../user/dto/user.login.dto'
+import { RegistrationStatus } from './registrationStatus'
 
 @Injectable()
 export class AuthService {
@@ -12,28 +12,32 @@ export class AuthService {
     private readonly jwtService: JwtService
   ) {}
 
-  async register(userDto: CreateUserDto): Promise<RegistrationStatus> {
+  async register(
+    userDto: CreateUserDto
+  ): Promise<RegistrationStatus> {
     let status: RegistrationStatus = {
       success: true,
-      message: 'user registered',
-    };
+      message: 'user registered'
+    }
 
     try {
-      await this.userService.create(userDto);
+      await this.userService.create(userDto)
     } catch (err) {
       status = {
         success: false,
-        message: err,
-      };
+        message: err
+      }
     }
 
-    return status;
+    return status
   }
 
   async login(loginUserDto: LoginUserDto) {
-    const user = await this.userService.findByLogin(loginUserDto);
-    const dataForToken = {id: user.id, role: user.role};
-    const token = this.jwtService.signAsync(dataForToken , { secret: process.env.JWT_SECRET } );
-    return token;
+    const user = await this.userService.findByLogin(loginUserDto)
+    const dataForToken = { id: user.id, role: user.role }
+    const token = this.jwtService.signAsync(dataForToken, {
+      secret: process.env.JWT_SECRET
+    })
+    return token
   }
 }

@@ -1,4 +1,4 @@
 export class CategoryPersistType {
-    id: number
-    name: string
+  id: number
+  name: string
 }
