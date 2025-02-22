@@ -6,7 +6,7 @@ import { toCategoryDto, toCategoryDtoArray } from './category.mapper'
 import { CreateCategoryDto } from './dto/category.create.dto'
 import { UpdateCategoryDto } from './dto/category.update.dto'
 import { CategoryHasTasksDto } from './dto/category.hasTasks.dto'
-import { ParamsValidation } from '../common/paramsValidation'
+//import { ParamsValidation } from '../common/paramsValidation'
 
 @Injectable()
 export class CategoryService {
@@ -15,14 +15,13 @@ export class CategoryService {
   async getAll(
     pagingOptions: Partial<IPagingOptions>
   ): Promise<IPaging<CategoryDto>> {
-    ParamsValidation.validatePagingOptions(pagingOptions)
+    //ParamsValidation.validatePagingOptions(pagingOptions)
     let result = await this.categoryRepository.getAll(pagingOptions)
     let categories = toCategoryDtoArray(result.items)
     return { items: categories, pagination: result.pagination }
   }
 
   async getById(id: number): Promise<CategoryDto> {
-    ParamsValidation.validateId(id)
     let category = await this.categoryRepository.getById(id)
     if (category == null)
       throw new NotFoundException(
@@ -43,7 +42,6 @@ export class CategoryService {
     id: number,
     updateCategoryDto: UpdateCategoryDto
   ): Promise<CategoryDto> {
-    ParamsValidation.validateId(id)
     let updatedCategory = await this.categoryRepository.update(
       id,
       updateCategoryDto
@@ -56,17 +54,14 @@ export class CategoryService {
   }
 
   async hasTasks(id: number): Promise<CategoryHasTasksDto> {
-    ParamsValidation.validateId(id)
     return { hasTasks: await this.categoryRepository.hasTasks(id) }
   }
 
   async delete(id: number) {
-    ParamsValidation.validateId(id)
     await this.categoryRepository.delete(id)
   }
 
   async deleteForce(id: number) {
-    ParamsValidation.validateId(id)
     await this.categoryRepository.deleteForce(id)
   }
 }

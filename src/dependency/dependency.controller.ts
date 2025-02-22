@@ -7,7 +7,8 @@ import {
   Query,
   UseGuards,
   Request,
-  Delete
+  Delete,
+  ParseIntPipe
 } from '@nestjs/common'
 import { RolesGuard } from '../auth/auth.roleGuard'
 import { IPaging, IPagingOptions } from '../pagination/pagination'
@@ -70,7 +71,7 @@ export class DependencyController {
   @ApiOkResponse({ description: 'Успех' })
   @ApiBadRequestResponse({ description: 'Некорректный запрос' })
   getAll(
-    @Param('taskId') taskId: number,
+    @Param('taskId', ParseIntPipe) taskId: number,
     @Query() pagingOptions: Partial<IPagingOptions>
   ): Promise<IPaging<DependencyDto>> {
     return this.dependencyService.getAll(taskId, pagingOptions)
@@ -98,7 +99,7 @@ export class DependencyController {
   })
   @ApiBadRequestResponse({ description: 'Некорректный запрос' })
   create(
-    @Param('taskId') taskId: number,
+    @Param('taskId', ParseIntPipe) taskId: number,
     @Body() createDependencyDto: CreateDependencyDto,
     @Request() req
   ): Promise<DependencyDto> {
@@ -123,8 +124,8 @@ export class DependencyController {
   })
   @ApiBadRequestResponse({ description: 'Некорректный запрос' })
   async delete(
-    @Param('taskId') taskId: number,
-    @Param('dependencyId') dependencyId: number
+    @Param('taskId', ParseIntPipe) taskId: number,
+    @Param('dependencyId', ParseIntPipe) dependencyId: number
   ) {
     await this.dependencyService.delete(taskId, dependencyId)
   }

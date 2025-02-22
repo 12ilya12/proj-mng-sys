@@ -11,7 +11,7 @@ import {
   toDependencyDtoArray
 } from './dependency.mapper'
 import { CreateDependencyDto } from './dto/dependency.create.dto'
-import { ParamsValidation } from '../common/paramsValidation'
+//import { ParamsValidation } from '../common/paramsValidation'
 import { TaskRepository } from '../task/task.repository'
 
 @Injectable()
@@ -25,8 +25,7 @@ export class DependencyService {
     parentTaskId: number,
     pagingOptions: Partial<IPagingOptions>
   ): Promise<IPaging<DependencyDto>> {
-    ParamsValidation.validateId(parentTaskId)
-    ParamsValidation.validatePagingOptions(pagingOptions)
+    //ParamsValidation.validatePagingOptions(pagingOptions)
     let result = await this.dependencyRepository.getAll(
       parentTaskId,
       pagingOptions
@@ -40,7 +39,6 @@ export class DependencyService {
     createDependencyDto: CreateDependencyDto,
     userInfo
   ): Promise<DependencyDto> {
-    ParamsValidation.validateId(parentTaskId)
     if ((await this.taskRepository.getById(parentTaskId)) == null) {
       throw new NotFoundException(
         `Не найдена задача с идентификатором ${parentTaskId}`
@@ -69,8 +67,6 @@ export class DependencyService {
   }
 
   async delete(parentTaskId: number, dependencyId: number) {
-    ParamsValidation.validateId(parentTaskId)
-    ParamsValidation.validateId(dependencyId)
     await this.dependencyRepository.delete(parentTaskId, dependencyId)
   }
 }

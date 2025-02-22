@@ -1,8 +1,8 @@
-import { BadRequestException } from '@nestjs/common'
+/*import { BadRequestException } from '@nestjs/common'
 import { isInt, isNumberString, isPositive } from 'class-validator'
 import { IPagingOptions } from '../pagination/pagination'
 
-export class ParamsValidation {
+ export class ParamsValidation {
   static validateId(id: number) {
     if (
       !(
@@ -58,4 +58,4 @@ export class ParamsValidation {
         'Название столбца, по которому требуется сортировка, не может быть пустым'
       )
   }
-}
+} */

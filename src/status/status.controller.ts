@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -83,7 +84,7 @@ export class StatusController {
     description: 'Не найдена статус с заданным идентификатором'
   })
   @ApiBadRequestResponse({ description: 'Некорректный запрос' })
-  getById(@Param('id') id: number): Promise<StatusDto> {
+  getById(@Param('id', ParseIntPipe) id: number): Promise<StatusDto> {
     return this.statusService.getById(id)
   }
 
@@ -119,7 +120,7 @@ export class StatusController {
   @ApiBadRequestResponse({ description: 'Некорректный запрос' })
   @SetMetadata('roles', ['ADMIN'])
   update(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateStatusDto: UpdateStatusDto
   ): Promise<StatusDto> {
     let updatedStatus = this.statusService.update(id, updateStatusDto)
@@ -143,7 +144,7 @@ export class StatusController {
   })
   @ApiBadRequestResponse({ description: 'Некорректный запрос' })
   @SetMetadata('roles', ['ADMIN'])
-  async delete(@Param('id') id: number) {
+  async delete(@Param('id', ParseIntPipe) id: number) {
     await this.statusService.delete(id)
   }
 }

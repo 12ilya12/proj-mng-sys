@@ -9,7 +9,8 @@ import {
   Query,
   SetMetadata,
   UseGuards,
-  Request
+  Request,
+  ParseIntPipe
 } from '@nestjs/common'
 import { TaskService } from './task.service'
 import { TaskDto } from './dto/task.dto'
@@ -92,7 +93,7 @@ export class TaskController {
     description: 'Не найдена задача с заданным идентификатором'
   })
   @ApiBadRequestResponse({ description: 'Некорректный запрос' })
-  getById(@Param('id') id: number): Promise<TaskDto> {
+  getById(@Param('id', ParseIntPipe) id: number): Promise<TaskDto> {
     return this.taskService.getById(id)
   }
 
@@ -126,7 +127,7 @@ export class TaskController {
   @ApiBadRequestResponse({ description: 'Некорректный запрос' })
   @SetMetadata('roles', ['ADMIN', 'USER'])
   update(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateTaskDto: UpdateTaskDto,
     @Request() req
   ): Promise<TaskDto> {
@@ -155,7 +156,7 @@ export class TaskController {
   })
   @ApiBadRequestResponse({ description: 'Некорректный запрос' })
   @SetMetadata('roles', ['ADMIN'])
-  async delete(@Param('id') id: number) {
+  async delete(@Param('id', ParseIntPipe) id: number) {
     await this.taskService.delete(id)
   }
 }

@@ -5,7 +5,7 @@ import { IPaging, IPagingOptions } from '../pagination/pagination'
 import { toStatusDto, toStatusDtoArray } from './status.mapper'
 import { CreateStatusDto } from './dto/status.create.dto'
 import { UpdateStatusDto } from './dto/status.update.dto'
-import { ParamsValidation } from '../common/paramsValidation'
+//import { ParamsValidation } from '../common/paramsValidation'
 
 @Injectable()
 export class StatusService {
@@ -14,14 +14,13 @@ export class StatusService {
   async getAll(
     pagingOptions: Partial<IPagingOptions>
   ): Promise<IPaging<StatusDto>> {
-    ParamsValidation.validatePagingOptions(pagingOptions)
+    //ParamsValidation.validatePagingOptions(pagingOptions)
     let result = await this.statusRepository.getAll(pagingOptions)
     let statuses = toStatusDtoArray(result.items)
     return { items: statuses, pagination: result.pagination }
   }
 
   async getById(id: number): Promise<StatusDto> {
-    ParamsValidation.validateId(id)
     let status = await this.statusRepository.getById(id)
     if (status == null)
       throw new NotFoundException(
@@ -40,7 +39,6 @@ export class StatusService {
     id: number,
     updateStatusDto: UpdateStatusDto
   ): Promise<StatusDto> {
-    ParamsValidation.validateId(id)
     let updatedStatus = await this.statusRepository.update(
       id,
       updateStatusDto
@@ -53,7 +51,6 @@ export class StatusService {
   }
 
   async delete(id: number) {
-    ParamsValidation.validateId(id)
     await this.statusRepository.delete(id)
   }
 }

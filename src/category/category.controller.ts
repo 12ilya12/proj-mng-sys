@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -84,7 +85,9 @@ export class CategoryController {
     description: 'Не найдена категория с заданным идентификатором'
   })
   @ApiBadRequestResponse({ description: 'Некорректный запрос' })
-  getById(@Param('id') id: number): Promise<CategoryDto> {
+  getById(
+    @Param('id', ParseIntPipe) id: number
+  ): Promise<CategoryDto> {
     return this.categoryService.getById(id)
   }
 
@@ -120,7 +123,7 @@ export class CategoryController {
   @ApiBadRequestResponse({ description: 'Некорректный запрос' })
   @SetMetadata('roles', ['ADMIN'])
   update(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateCategoryDto: UpdateCategoryDto
   ): Promise<CategoryDto> {
     let updatedCategory = this.categoryService.update(
@@ -146,7 +149,9 @@ export class CategoryController {
     description: 'Не найдена категория с заданным идентификатором'
   })
   @ApiBadRequestResponse({ description: 'Некорректный запрос' })
-  hasTasks(@Param('id') id: number): Promise<CategoryHasTasksDto> {
+  hasTasks(
+    @Param('id', ParseIntPipe) id: number
+  ): Promise<CategoryHasTasksDto> {
     return this.categoryService.hasTasks(id)
   }
 
@@ -167,7 +172,7 @@ export class CategoryController {
   })
   @ApiBadRequestResponse({ description: 'Некорректный запрос' })
   @SetMetadata('roles', ['ADMIN'])
-  async delete(@Param('id') id: number) {
+  async delete(@Param('id', ParseIntPipe) id: number) {
     await this.categoryService.delete(id)
   }
 
@@ -188,7 +193,7 @@ export class CategoryController {
   })
   @ApiBadRequestResponse({ description: 'Некорректный запрос' })
   @SetMetadata('roles', ['ADMIN'])
-  async deleteForce(@Param('id') id: number) {
+  async deleteForce(@Param('id', ParseIntPipe) id: number) {
     await this.categoryService.deleteForce(id)
   }
 }
