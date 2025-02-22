@@ -1,5 +1,4 @@
-export class DependencyPersistType {
-  id: number
-  parentTaskId: number
-  childTaskId: number
-}
+import { dependencyTable } from 'src/db/schema'
+
+export type DependencyPersistType =
+  typeof dependencyTable.$inferSelect

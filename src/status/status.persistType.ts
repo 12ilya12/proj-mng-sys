@@ -1,4 +1,3 @@
-export class StatusPersistType {
-  id: number
-  name: string
-}
+import { statusTable } from 'src/db/schema'
+
+export type StatusPersistType = typeof statusTable.$inferSelect

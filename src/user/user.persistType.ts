@@ -1,8 +1,3 @@
-export class UserPersistType {
-  id: number
-  login: string
-  password: string
-  fullName: string
-  email: string
-  role: string
-}
+import { userTable } from 'src/db/schema'
+
+export type UserPersistType = typeof userTable.$inferSelect

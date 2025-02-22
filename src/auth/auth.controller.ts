@@ -3,7 +3,7 @@ import {
   Controller,
   HttpException,
   HttpStatus,
-  Post,
+  Post
 } from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { CreateUserDto } from '../user/dto/user.create.dto'

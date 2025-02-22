@@ -1,4 +1,3 @@
-export class CategoryPersistType {
-  id: number
-  name: string
-}
+import { categoryTable } from 'src/db/schema'
+
+export type CategoryPersistType = typeof categoryTable.$inferSelect

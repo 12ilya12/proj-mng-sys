@@ -1,10 +1,3 @@
-export class TaskPersistType {
-  id: number
-  name: string
-  description: string
-  categoryId: number
-  statusId: number
-  userId: number
-  deadline: string
-  priority: number
-}
+import { taskTable } from 'src/db/schema'
+
+export type TaskPersistType = typeof taskTable.$inferSelect
